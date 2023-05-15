@@ -1,5 +1,4 @@
-// dll_main.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
-//
+
 
 // #pragma execution_character_set("gbk") 
 #pragma comment(lib,"Msi.lib")
@@ -132,13 +131,16 @@ void visualResult(cv::Mat& image, const std::vector<DetectionResult>& info, cons
     {
         //  Generate two points and show the label on the graph.
         cv::Point p1(info[i].box.x0, info[i].box.y0), p2(info[i].box.x1, info[i].box.y1);
-        putTextZH(image, (info[i].label).c_str(), p1, cv::Scalar(0, 0, 255), 50, "宋体", false, false);
+        if (info[i].label.compare("OK")) {
+            putTextZH(image, (info[i].label).c_str(), p1, cv::Scalar(0, 0, 255), 50, "宋体", false, false);
+        }
+        else {
+            putTextZH(image, (info[i].label).c_str(), p1, cv::Scalar(0, 255, 0), 50, "宋体", false, false);
+        }
         if (info[i].mask.empty()) {
             std::vector<std::vector<cv::Point>> points;
             cv::rectangle(image, p1, p2, cv::Scalar(0, 255, 0), 2);
         }
-
-
         drawMask(image, info[i]);
     }
 
@@ -196,31 +198,13 @@ int main(int argc, char ** argv) {
     
     //  model_path is the path of the model,    such as "C:\\Users\\NeuroBot\\A"
     //  file_path  is the path of the pictures, such as "C:\\Users\\NeuroBot\\picture"
-    string model_path = "C:\\Users\\Administrator\\Desktop\\zy\\01seg\\trt";
-    string file_path = "C:\\Users\\Administrator\\Desktop\\zy\\01seg\\test01";
+    string model_path = "C:\\Users\\NeuroBot\\A";
+    string file_path = "C:\\Users\\NeuroBot\\picture";
 
     string device_name = "cuda";
     string model_name = "neuro_deteor";                    // the model name, you can name it by yourself.
 
-    if (argc != 1) {
 
-        // -m "C:\\Users\\NeuroBot\\A" - f "C:\\Users\\NeuroBot\\picture" - n "neuro_deteor"
-        string m = "-m", n = "-n", d = "-d";
-        for (int i = 1; i < argc; i++) {
-            if (!m.compare(argv[i])) {
-                model_path = argv[++i];
-            }
-            else if (!n.compare(argv[i])) {
-                model_name = argv[++i];
-            }
-            else if (!d.compare(argv[i])) {
-                file_path = argv[++i];
-            }
-            else {
-
-            }
-        }
-    }
 
     int total_time = 0;
     int status{};                                          // the state after loading the model, and the default is zero.
@@ -252,19 +236,10 @@ int main(int argc, char ** argv) {
 
         if ((int)mats.size() == get_batch(model_name.c_str())) {
             vector<vector<DetectionResult>> out_results{};
-            DWORD start = GetTickCount64();        // beginning time
+
             if (predict_model(model_name.c_str(), mats, out_results) != 0) {
                 continue;
             }
-            DWORD end = GetTickCount64();          //  end time
-
-            if (i > 0) {
-                total_time += (end - start);
-            }
-            // cout << "PICTURE_SIZE  " << mats[0].channels() << mats[0].size() << endl;
-
-            cout << "predict time : " << end - start << endl;
-            cout << "reuslt size ===================================== : " << out_results.size() << endl;
             int i = 0;
 
             // The results to be printed.
@@ -276,11 +251,12 @@ int main(int argc, char ** argv) {
             for (auto res : out_results) {
                 cout << "reuslt size ++++++++++++++++++++++++++++++++ : " << res.size() << endl;
                 for (auto r : res) {
-                  
-                    // cout << "MASK RESULT" << r.mask.channels() << "  " << r.mask.size() << endl;
-                    cout << r.label_index << "-" << r.label << "-" << r.score << ":" << r.box.x0 << "-" << r.box.y0 << "-" << r.box.x1 << "-" << r.box.y1 << endl;
-                    // cout << "BOX LEN  " << r.box.x1 - r.box.x0 << "   " << r.box.y1 - r.box.y0 << endl;
-                    // cout << r.mask_width << " mask " << r.mask_height << endl;
+                    // If OK, then print the position in console.
+                    if (!r.label.compare("OK")) {  
+                        cout << "***********************" << "   OK   " << "***********************" << endl;
+                        cout << r.box.x0 << "-" << r.box.y0 << "-" << r.box.x1 << "-" << r.box.y1 << endl;
+                    }
+                    
                 }
                 // It will visual a result by a new window whose name is show.
                 visualResult(mats[i], res, "show");

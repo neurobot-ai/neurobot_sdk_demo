@@ -1,7 +1,3 @@
-// dll_main.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
-//
-
-// #pragma execution_character_set("gbk") 
 #pragma comment(lib,"Msi.lib")
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <iostream>
@@ -29,11 +25,6 @@ using namespace std;
 using namespace clipp;
 namespace fs = experimental::filesystem;
 
-
-
-#undef max
-
-#undef min
 
 // Get all the files's names in the dictionary, and the result will be put into the parameter vFileNames.
 // 
@@ -132,7 +123,7 @@ void visualResult(cv::Mat& image, const std::vector<DetectionResult>& info, cons
     {
         //  Generate two points and show the label on the graph.
         cv::Point p1(info[i].box.x0, info[i].box.y0), p2(info[i].box.x1, info[i].box.y1);
-        putTextZH(image, (info[i].label).c_str(), p1, cv::Scalar(0, 0, 255), 50, "宋体", false, false);
+        putTextZH(image, (info[i].label).c_str(), p1, cv::Scalar(0, 0, 255), 50, "Arial", false, false);
         if (info[i].mask.empty()) {
             std::vector<std::vector<cv::Point>> points;
             cv::rectangle(image, p1, p2, cv::Scalar(0, 255, 0), 2);
@@ -154,73 +145,14 @@ void visualResult(cv::Mat& image, const std::vector<DetectionResult>& info, cons
     cv::destroyAllWindows();
 }
 
+int predict(string model_path, string file_path, string model_name) {
 
-// Read the result in the Json file.              
-//  
-// 
-
-
-void readDataFromJson() {
-    Json::Reader reader;
-    Json::Value root;
-    ifstream srcFile("checked.json", ios::binary);
-    if (!srcFile.is_open()) {
-        cout << "failed to open the file." << endl;
-        return;
-    }
-    if (reader.parse(srcFile, root)) {
-        const int required_num = root["required"].size();
-        const int recommend_num = root["recommend"].size();
-        for (int i = 0; i < required_num; i++) {
-            int status = root["requied"][i]["status"].asInt();
-            if (!status) {
-                cout << root["required"][i]["info"].asString() << endl;
-            }
-        }
-        for (int i = 0; i < recommend_num; i++) {
-            int status = root["recommend"][i]["status"].asInt();
-            if (!status) {
-                cout << root["recommend"][i]["info"].asString() << endl;
-            }
-        }
-
-    }
-}
-
-
-int main(int argc, char ** argv) {
-
-    system("checkEnv.bat");
-    cout << "Environment detection is successful. " << endl;
-    readDataFromJson();
-    
     //  model_path is the path of the model,    such as "C:\\Users\\NeuroBot\\A"
     //  file_path  is the path of the pictures, such as "C:\\Users\\NeuroBot\\picture"
-    string model_path = "C:\\Users\\Administrator\\Desktop\\zy\\01seg\\trt";
-    string file_path = "C:\\Users\\Administrator\\Desktop\\zy\\01seg\\test01";
+
 
     string device_name = "cuda";
-    string model_name = "neuro_deteor";                    // the model name, you can name it by yourself.
 
-    if (argc != 1) {
-
-        // -m "C:\\Users\\NeuroBot\\A" - f "C:\\Users\\NeuroBot\\picture" - n "neuro_deteor"
-        string m = "-m", n = "-n", d = "-d";
-        for (int i = 1; i < argc; i++) {
-            if (!m.compare(argv[i])) {
-                model_path = argv[++i];
-            }
-            else if (!n.compare(argv[i])) {
-                model_name = argv[++i];
-            }
-            else if (!d.compare(argv[i])) {
-                file_path = argv[++i];
-            }
-            else {
-
-            }
-        }
-    }
 
     int total_time = 0;
     int status{};                                          // the state after loading the model, and the default is zero.
@@ -229,7 +161,6 @@ int main(int argc, char ** argv) {
         fprintf(stderr, "failed to create detector, code: %d\n", (int)status);
         return -1;
     }
-
     vector<string> img_paths;                             // the list of the pictures' name 
     getFilesName(file_path, img_paths);                   // get all the files's names in the dictionary,
     vector<cv::Mat> images;                               // the information in opencv mat format.
@@ -241,6 +172,7 @@ int main(int argc, char ** argv) {
     //  predict and print the result.
     //  batch_size is given in the file model.conf. the default is ONE.
     for (int i = 0; i < (int)img_paths.size(); ++i) {
+        cout << endl;
         auto img = cv::imread(file_path + "\\" + img_paths[i]);
         if (!img.data) {
             fprintf(stderr, "failed to load image: %s\n", img_paths[i].c_str());
@@ -249,7 +181,7 @@ int main(int argc, char ** argv) {
         images.push_back(img);
         image_ids.push_back(i);
         mats.push_back(img);
-
+        cout << img_paths[i] << endl;
         if ((int)mats.size() == get_batch(model_name.c_str())) {
             vector<vector<DetectionResult>> out_results{};
             DWORD start = GetTickCount64();        // beginning time
@@ -261,34 +193,35 @@ int main(int argc, char ** argv) {
             if (i > 0) {
                 total_time += (end - start);
             }
-            // cout << "PICTURE_SIZE  " << mats[0].channels() << mats[0].size() << endl;
-
-            cout << "predict time : " << end - start << endl;
-            cout << "reuslt size ===================================== : " << out_results.size() << endl;
             int i = 0;
-
             // The results to be printed.
             // 
             // for OCR and object Detection, results are rectangle box, confidence level,category.
             // 
             // for Pixel Segmentation, results are rectangle box, confidence level,category, pixel segmentation image.
-
             for (auto res : out_results) {
-                cout << "reuslt size ++++++++++++++++++++++++++++++++ : " << res.size() << endl;
                 for (auto r : res) {
-                  
-                    // cout << "MASK RESULT" << r.mask.channels() << "  " << r.mask.size() << endl;
-                    cout << r.label_index << "-" << r.label << "-" << r.score << ":" << r.box.x0 << "-" << r.box.y0 << "-" << r.box.x1 << "-" << r.box.y1 << endl;
-                    // cout << "BOX LEN  " << r.box.x1 - r.box.x0 << "   " << r.box.y1 - r.box.y0 << endl;
-                    // cout << r.mask_width << " mask " << r.mask_height << endl;
+                    cout << endl;
+                    cout << "label:                              " << r.label << endl;
+                    cout << "Label_index:                        " << r.label_index << endl;
+                    cout << "Confidential score:                 " << r.score << endl;
+                    cout << "Position of result(x0,y0,x1,y1):    " << r.box.x0 << "  " << r.box.y0 << "  " << r.box.x1 << "  " << r.box.y1 << endl;
+                    cout << "Row_index:                          " << r.row_index << endl;
+                    cout << "Col_index:                          " << r.col_index << endl;
+                    cout << "Mask_width:                         " << r.mask_width << endl;
+                    cout << "Mask_height:                        " << r.mask_height << endl;
                 }
+                cout << endl;
+                cout << "Time cost:                          " << end - start << " ms" << endl << endl << endl;
+                cout << "Press enter to continue             " << endl;
                 // It will visual a result by a new window whose name is show.
-                visualResult(mats[i], res, "show");
+                visualResult(mats[i], res, img_paths[i]);
                 i++;
             }
             mats.clear();
             image_ids.clear();
             images.clear();
+            cout << endl << endl;
         }
     }
     if (!mats.empty()) {
@@ -298,6 +231,30 @@ int main(int argc, char ** argv) {
     destroy_model(model_name.c_str());
 
     return 0;
+
+}
+int main(int argc, char ** argv) {
+
+    
+    //  model_path is the path of the model,    such as "C:\\Users\\NeuroBot\\A"
+    //  file_path  is the path of the pictures, such as "C:\\Users\\NeuroBot\\picture"
+    string device_name = "cuda";
+    string model_name = "neuro_deteor";                    // the model name, you can name it by yourself.
+    string model_path_1 = "C:\\Users\\NeuroBot\\A";
+    string model_path_2 = "C:\\Users\\NeuroBot\\B";
+    string model_path_3 = "C:\\Users\\NeuroBot\\C";
+
+
+    string file_path_1 = "C:\\Users\\NeuroBot\\dirA";
+    string file_path_2 = "C:\\Users\\NeuroBot\\dirB";
+    string file_path_3 = "C:\\Users\\NeuroBot\\dirC";
+
+
+    predict(model_path_1, file_path_1, model_name);
+    predict(model_path_2, file_path_2, model_name);
+    predict(model_path_3, file_path_3, model_name);
+    return 0;
+
 }
 
 
