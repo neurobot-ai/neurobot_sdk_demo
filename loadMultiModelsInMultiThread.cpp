@@ -56,7 +56,9 @@ int getFilesName(const std::string dir, std::vector<std::string>& vFileNames, bo
             fileName.clear();
         }
     }
-    if (vFileNames.empty()) return 0;
+	if (vFileNames.empty()) {
+		std::cout << "This dictionary is Empty, please check your dictinoary path." << endl;
+	}
     return vFileNames.size();
 
 }
@@ -106,12 +108,11 @@ void drawMask(cv::Mat& image, const DetectionResult& info)
 
 void visualResult(cv::Mat& image, const std::vector<DetectionResult>& info, const std::string& window_name)
 {
-    if (image.empty())
-    {
-        std::cout << "input is empty, please check the path!" << std::endl;
-        return;
-    }
-
+	if (image.empty())
+	{
+		cerr << "input is empty, please check the path!" << std::endl;
+		return;
+	}
 
     int fontface = cv::FONT_HERSHEY_PLAIN;
     double fontscale = 1;
@@ -121,13 +122,10 @@ void visualResult(cv::Mat& image, const std::vector<DetectionResult>& info, cons
     {
         //  Generate two points and show the label on the graph.
         cv::Point p1(info[i].box.x0, info[i].box.y0), p2(info[i].box.x1, info[i].box.y1);
-        putTextZH(image, (info[i].label).c_str(), p1, cv::Scalar(0, 0, 255), 50, "ËÎÌå", false, false);
+        putTextZH(image, (info[i].label).c_str(), p1, cv::Scalar(0, 0, 255), 50, "ï¿½ï¿½ï¿½ï¿½", false, false);
         if (info[i].mask.empty()) {
-            std::vector<std::vector<cv::Point>> points;
             cv::rectangle(image, p1, p2, cv::Scalar(0, 255, 0), 2);
         }
-
-
         drawMask(image, info[i]);
     }
 
@@ -155,10 +153,10 @@ int predict(string model_path, string file_path, string model_name) {
     int total_time = 0;
     int status{};                                          // the state after loading the model, and the default is zero.
     load_model(model_name.c_str(), model_path.c_str(), status);
-    if (status != 0) {
-        fprintf(stderr, "failed to create detector, code: %d\n", (int)status);
-        return -1;
-    }
+	if (status != 0) {
+		cerr << "failed to create detector, code: " << status << endl;
+		return -1;
+	}
     vector<string> img_paths;                             // the list of the pictures' name 
     getFilesName(file_path, img_paths);                   // get all the files's names in the dictionary,
     vector<cv::Mat> images;                               // the information in opencv mat format.
@@ -172,31 +170,33 @@ int predict(string model_path, string file_path, string model_name) {
     for (int i = 0; i < (int)img_paths.size(); ++i) {
         cout << endl;
         auto img = cv::imread(file_path + "\\" + img_paths[i]);
-        if (!img.data) {
-            fprintf(stderr, "failed to load image: %s\n", img_paths[i].c_str());
-            continue;
-        }
+		if (!img.data) {
+			cerr << "Load image: " << img_paths[i] << "is failed" << endl;
+			continue;
+		}
+		else {
+			cout << "Load image: " << img_paths[i] << "is successful" << endl;
+		}
         images.push_back(img);
         image_ids.push_back(i);
         mats.push_back(img);
         cout << img_paths[i] << endl;
         if ((int)mats.size() == get_batch(model_name.c_str())) {
-            vector<vector<DetectionResult>> out_results{};
-            DWORD start = GetTickCount64();        // beginning time
-            if (predict_model(model_name.c_str(), mats, out_results) != 0) {
-                continue;
-            }
-            DWORD end = GetTickCount64();          //  end time
-
-            if (i > 0) {
-                total_time += (end - start);
-            }
-            int i = 0;
+			vector<vector<DetectionResult>> out_results{};
+			DWORD start = GetTickCount64();        // beginning time
+			int predictStatus = predict_model(model_name.c_str(), mats, out_results);
+			DWORD end = GetTickCount64();          //  end time
+			if (predictStatus != 0) {
+				cout << "This prediction is failed " << endl;
+				cout << "Time cost:                          " << end - start << " ms" << endl << endl << endl;
+				continue;
+			}
             // The results to be printed.
             // 
             // for OCR and object Detection, results are rectangle box, confidence level,category.
             // 
             // for Pixel Segmentation, results are rectangle box, confidence level,category, pixel segmentation image.
+            int index = 0;
             for (auto res : out_results) {
                 for (auto r : res) {
                     cout << endl;
@@ -214,7 +214,7 @@ int predict(string model_path, string file_path, string model_name) {
                 cout << "Press enter to continue             " << endl;
                 // It will visual a result by a new window whose name is show.
                 visualResult(mats[i], res, img_paths[i]);
-                i++;
+                index++;
             }
             mats.clear();
             image_ids.clear();
@@ -222,10 +222,15 @@ int predict(string model_path, string file_path, string model_name) {
             cout << endl << endl;
         }
     }
-    if (!mats.empty()) {
-        vector<vector<DetectionResult>> out_results{};
-        (void)predict_model(model_name.c_str(), mats, out_results);
-    }
+	if (!mats.empty()) {
+		int requested_batch = get_batch(model_name.c_str());
+		cv::Mat last_pict = mats[mats.size() - 1];
+		while (mats.size() < requested_batch()) {
+			mats.push_back(last_pict);
+		}
+		vector<vector<DetectionResult>> out_results{};
+		(void)predict_model(model_name.c_str(), mats, out_results);
+	}
     destroy_model(model_name.c_str());
 
     return 0;

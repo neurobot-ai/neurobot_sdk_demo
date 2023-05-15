@@ -10,9 +10,10 @@
 
 ### 1： Directly use an executable file to predict
 - This example is in dictionary **detectEnvironmentAndPredict**.
-- This example supports environment detection and outputs an executable file. With environment detection, It can detect whether your computer is capable to use our model, including the following information. And the first two are necessary, and others are recommended.
+- This example supports environment detection and outputs an executable file. With environment detection, It can detect whether your computer is capable to use our model, including the following information. And the first three are necessary, and others are recommended.
   - Configuration file And model file exist.
   - The system is a Windows 64 bit version.
+  - NVIDIA graphics card and driver are installed.
   - Turn off firewall And antivirus software.
   - CPU is with Intel main frequency 2.5GHZ 6-core and above versions.
   - System memory is greater than 8GB.
@@ -27,15 +28,19 @@
 
 
 ### 3：Load multiple models in single-thread
-- This example is in file **loadMultiModelsInSingleThread.cpp.cpp**
+- This example is in file **loadMultiModelsInSingleThread.cpp**
 - This example shows how to load multiple models to predict in single-thread. Exactly, it will load these models one by one, and call the predict interface of each model in turn, which means it will output the result serially.
 loadMultiModelsInMultiThread.cpp	
 
 ### 4：Load multiple models in multi-thread
-- This example is in file ****;
+- This example is in file **loadMultiModelInMultiThread.cpp**;
 - This example shows how to load multiple models to predict in multi-thread. This means that instead of waiting for each model to finish loading before moving onto the next one, the program can load several models at once, significantly speeding up the process.
-- It is recommended that each thread loads its own model used by this thread. Inter-threads are model-isolated, and predictions are made within a single thread using the model bound to this thread.
+- Each thread loads its own model used by this thread. Inter-threads are model-isolated, and predictions are made within a single thread using the model bound to this thread.
 
+
+### 5：Load One model to predict in Multi-thread
+- This example is in file **LoadOneModelInSingleThread.cpp**.
+- This example shows how to predict in multi-thread, and we use mutex to ensure mutual exclusion.
 
 ### 5：Use our SDK in LabView
 - This example shows how to use our SDK in LabView.

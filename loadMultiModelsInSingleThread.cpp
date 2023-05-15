@@ -1,7 +1,7 @@
 #pragma comment(lib,"Msi.lib")
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <iostream>
-#include <string>d
+#include <string>
 #include <stdlib.h>
 #include <fstream>
 #include <typeinfo>
@@ -58,8 +58,10 @@ int getFilesName(const std::string dir, std::vector<std::string>& vFileNames, bo
             fileName.clear();
         }
     }
-    if (vFileNames.empty()) return 0;
-    return vFileNames.size();
+	if (vFileNames.empty()) {
+		std::cout << "This dictionary is Empty, please check your dictinoary path." << endl;
+	}   
+     return vFileNames.size();
 
 }
 
@@ -110,10 +112,9 @@ void visualResult(cv::Mat& image, const std::vector<DetectionResult>& info, cons
 {
     if (image.empty())
     {
-        std::cout << "input is empty, please check the path!" << std::endl;
+        cerr << "input is empty, please check the path!" << std::endl;
         return;
     }
-
 
     int fontface = cv::FONT_HERSHEY_PLAIN;
     double fontscale = 1;
@@ -125,11 +126,8 @@ void visualResult(cv::Mat& image, const std::vector<DetectionResult>& info, cons
         cv::Point p1(info[i].box.x0, info[i].box.y0), p2(info[i].box.x1, info[i].box.y1);
         putTextZH(image, (info[i].label).c_str(), p1, cv::Scalar(0, 0, 255), 50, "Arial", false, false);
         if (info[i].mask.empty()) {
-            std::vector<std::vector<cv::Point>> points;
             cv::rectangle(image, p1, p2, cv::Scalar(0, 255, 0), 2);
         }
-
-
         drawMask(image, info[i]);
     }
 
@@ -145,114 +143,121 @@ void visualResult(cv::Mat& image, const std::vector<DetectionResult>& info, cons
     cv::destroyAllWindows();
 }
 
-int predict(string model_path, string file_path, string model_name) {
 
-    //  model_path is the path of the model,    such as "C:\\Users\\NeuroBot\\A"
-    //  file_path  is the path of the pictures, such as "C:\\Users\\NeuroBot\\picture"
+int predict(string model_name, string file_path, vector<string> img_paths, int i) {
 
-
-    string device_name = "cuda";
-
-
-    int total_time = 0;
-    int status{};                                          // the state after loading the model, and the default is zero.
-    load_model(model_name.c_str(), model_path.c_str(), status);
-    if (status != 0) {
-        fprintf(stderr, "failed to create detector, code: %d\n", (int)status);
-        return -1;
-    }
-    vector<string> img_paths;                             // the list of the pictures' name 
-    getFilesName(file_path, img_paths);                   // get all the files's names in the dictionary,
     vector<cv::Mat> images;                               // the information in opencv mat format.
     vector<int> image_ids;                                // the image's id 
     vector<cv::Mat> mats;                                 // the information in opencv mat format.
 
-
-
     //  predict and print the result.
     //  batch_size is given in the file model.conf. the default is ONE.
-    for (int i = 0; i < (int)img_paths.size(); ++i) {
-        cout << endl;
-        auto img = cv::imread(file_path + "\\" + img_paths[i]);
-        if (!img.data) {
-            fprintf(stderr, "failed to load image: %s\n", img_paths[i].c_str());
-            continue;
-        }
-        images.push_back(img);
-        image_ids.push_back(i);
-        mats.push_back(img);
-        cout << img_paths[i] << endl;
-        if ((int)mats.size() == get_batch(model_name.c_str())) {
-            vector<vector<DetectionResult>> out_results{};
-            DWORD start = GetTickCount64();        // beginning time
-            if (predict_model(model_name.c_str(), mats, out_results) != 0) {
-                continue;
-            }
-            DWORD end = GetTickCount64();          //  end time
 
-            if (i > 0) {
-                total_time += (end - start);
-            }
-            int i = 0;
-            // The results to be printed.
-            // 
-            // for OCR and object Detection, results are rectangle box, confidence level,category.
-            // 
-            // for Pixel Segmentation, results are rectangle box, confidence level,category, pixel segmentation image.
-            for (auto res : out_results) {
-                for (auto r : res) {
-                    cout << endl;
-                    cout << "label:                              " << r.label << endl;
-                    cout << "Label_index:                        " << r.label_index << endl;
-                    cout << "Confidential score:                 " << r.score << endl;
-                    cout << "Position of result(x0,y0,x1,y1):    " << r.box.x0 << "  " << r.box.y0 << "  " << r.box.x1 << "  " << r.box.y1 << endl;
-                    cout << "Row_index:                          " << r.row_index << endl;
-                    cout << "Col_index:                          " << r.col_index << endl;
-                    cout << "Mask_width:                         " << r.mask_width << endl;
-                    cout << "Mask_height:                        " << r.mask_height << endl;
-                }
-                cout << endl;
-                cout << "Time cost:                          " << end - start << " ms" << endl << endl << endl;
-                cout << "Press enter to continue             " << endl;
-                // It will visual a result by a new window whose name is show.
-                visualResult(mats[i], res, img_paths[i]);
-                i++;
-            }
-            mats.clear();
-            image_ids.clear();
-            images.clear();
-            cout << endl << endl;
-        }
+    cout << endl;
+    auto img = cv::imread(file_path + "\\" + img_paths[i]);
+    if (!img.data) {
+        cerr << "Load image: " << img_paths[i] << "is failed" << endl;
+        return -1;
     }
-    if (!mats.empty()) {
+    else {
+        cout << "Load image: " << img_paths[i] << "is successful" << endl;
+    }
+    images.push_back(img);
+    image_ids.push_back(i);
+    mats.push_back(img);
+    cout << img_paths[i] << endl;
+    if ((int)mats.size() == get_batch(model_name.c_str())) {
         vector<vector<DetectionResult>> out_results{};
-        (void)predict_model(model_name.c_str(), mats, out_results);
+        DWORD start = GetTickCount64();        // beginning time
+        int predictStatus = predict_model(model_name.c_str(), mats, out_results);
+        DWORD end = GetTickCount64();          //  end time
+        if (predictStatus != 0) {
+            cout << "This prediction is failed " << endl;
+            cout << "Time cost:                          " << end - start << " ms" << endl << endl << endl;
+            return -1;
+        }
+        // The results to be printed.
+        // 
+        // for OCR and object Detection, results are rectangle box, confidence level,category.
+        // 
+        // for Pixel Segmentation, results are rectangle box, confidence level,category, pixel segmentation image.
+        int index = 0;
+        for (auto res : out_results) {
+            for (auto r : res) {
+                cout << endl;
+                cout << "label:                              " << r.label << endl;
+                cout << "Label_index:                        " << r.label_index << endl;
+                cout << "Confidential score:                 " << r.score << endl;
+                cout << "Position of result(x0,y0,x1,y1):    " << r.box.x0 << "  " << r.box.y0 << "  " << r.box.x1 << "  " << r.box.y1 << endl;
+                cout << "Row_index:                          " << r.row_index << endl;
+                cout << "Col_index:                          " << r.col_index << endl;
+                cout << "Mask_width:                         " << r.mask_width << endl;
+                cout << "Mask_height:                        " << r.mask_height << endl;
+            }
+            cout << endl;
+            cout << "Time cost:                          " << end - start << " ms" << endl << endl << endl;
+            cout << "Press enter to continue             " << endl;
+            // It will visual a result by a new window whose name is show.
+            visualResult(mats[index], res, img_paths[index]);
+            index++;
+        }
+        mats.clear();
+        image_ids.clear();
+        images.clear();
+        cout << endl << endl;
     }
-    destroy_model(model_name.c_str());
-
-    return 0;
-
+    return 1;
 }
+
+
 int main(int argc, char ** argv) {
 
     
     //  model_path is the path of the model,    such as "C:\\Users\\NeuroBot\\A"
     //  file_path  is the path of the pictures, such as "C:\\Users\\NeuroBot\\picture"
     string device_name = "cuda";
-    string model_name = "neuro_deteor";                    // the model name, you can name it by yourself.
     string model_path_1 = "C:\\Users\\NeuroBot\\A";
     string model_path_2 = "C:\\Users\\NeuroBot\\B";
-    string model_path_3 = "C:\\Users\\NeuroBot\\C";
+    string file_path_1 = "C:\\Users\\NeuroBot\\pictureA";
+    string file_path_2 = "C:\\Users\\NeuroBot\\pictureB";
+    string model_name_1 = "A";
+    string model_name_2 = "B";
+    int status{};                                          // the state after loading the model, and the default is zero.
+    load_model(model_name_1.c_str(), model_path_1.c_str(), status);
+	if (status != 0) {
+		cerr << "failed to create detector, code: " << status << endl;
+		return -1;
+	}
+    load_model(model_name_2.c_str(), model_path_2.c_str(), status);
+	if (status != 0) {
+		cerr << "failed to create detector, code: " << status << endl;
+		return -1;
+	}
+    vector<string> img_paths_1, img_paths_2;                  // the list of the pictures' name 
+    getFilesName(file_path_1, img_paths_1);                   // get all the files's names in the dictionary,
+    getFilesName(file_path_2, img_paths_2);                   // get all the files's names in the dictionary,
+    int i = 0, j = 0, count = 0;
+    while(i < img_paths_1.size() && j < img_paths_2.size()){
+        if(count % 2 == 0){
+            predict(model_name_1, file_path_1, img_paths_1, i);
+            ++i;
+        }
+        else{
+            predict(model_name_2, file_path_2, img_paths_2, j);
+            ++j;
+        }
+        count++;
+    }
 
+    while(i < img_paths_1.size()){
+        predict(model_name_1, file_path_1, img_paths_1, i);
+        ++i;
+    }
+    while(j < img_paths_2.size()){
+        predict(model_name_2, file_path_2, img_paths_2, j);
+        ++j;
 
-    string file_path_1 = "C:\\Users\\NeuroBot\\dirA";
-    string file_path_2 = "C:\\Users\\NeuroBot\\dirB";
-    string file_path_3 = "C:\\Users\\NeuroBot\\dirC";
-
-
-    predict(model_path_1, file_path_1, model_name);
-    predict(model_path_2, file_path_2, model_name);
-    predict(model_path_3, file_path_3, model_name);
+    }
     return 0;
 
 }

@@ -26,7 +26,6 @@ using namespace clipp;
 namespace fs = experimental::filesystem;
 
 
-
 // Get all the files's names in the dictionary, and the result will be put into the parameter vFileNames.
 // 
 // Parameters
@@ -113,10 +112,9 @@ void visualResult(cv::Mat& image, const std::vector<DetectionResult>& info, cons
 {
 	if (image.empty())
 	{
-		std::cout << "input is empty, please check the path!" << std::endl;
+		cerr << "input is empty, please check the path!" << std::endl;
 		return;
 	}
-
 
 	int fontface = cv::FONT_HERSHEY_PLAIN;
 	double fontscale = 1;
@@ -130,8 +128,6 @@ void visualResult(cv::Mat& image, const std::vector<DetectionResult>& info, cons
 		if (info[i].mask.empty()) {
 			cv::rectangle(image, p1, p2, cv::Scalar(0, 255, 0), 2);
 		}
-
-
 		drawMask(image, info[i]);
 	}
 
@@ -262,12 +258,12 @@ int main(int argc, char** argv) {
 				cout << "Time cost:                          " << end - start << " ms" << endl << endl << endl;
 				continue;
 			}
-
 			// The results to be printed.
 			// 
 			// for OCR and object Detection, results are rectangle box, confidence level,category.
 			// 
 			// for Pixel Segmentation, results are rectangle box, confidence level,category, pixel segmentation image.
+			int index = 0;
 			for (auto res : out_results) {
 				for (auto r : res) {
 					cout << endl;
@@ -284,8 +280,8 @@ int main(int argc, char** argv) {
 				cout << "Time cost:                          " << end - start << " ms" << endl << endl << endl;
 				cout << "Press enter to continue             " << endl;
 				// It will visual a result by a new window whose name is show.
-				visualResult(mats[i], res, img_paths[i]);
-				i++;
+				visualResult(mats[index], res, img_paths[index]);
+				index++;
 			}
 			mats.clear();
 			image_ids.clear();

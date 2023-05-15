@@ -1,18 +1,26 @@
-#pragma comment(lib,"Msi.lib")
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#pragma comment(lib,"Msi.lib")
 #include <iostream>
 #include <string>
+#include <stdlib.h>
+#include <fstream>
+#include <typeinfo>
+#include <typeindex>
+#include <json/json.h>
 #include <Windows.h>
 #include <experimental/filesystem>
 #include <iostream>
+#include <direct.h>
 #include <vector>
 #include <neuro_core.h>
 #include <opencv2/opencv.hpp>
 #include "putTextZH.h"
+#include <Windows.h>
+#include <msi.h>
+
+
 
 using namespace std;
-namespace fs = experimental::filesystem;
-
 
 // Get all the files's names in the dictionary, and the result will be put into the parameter vFileNames.
 // 
@@ -46,7 +54,7 @@ int getFilesName(const std::string dir, std::vector<std::string>& vFileNames, bo
             fileName.clear();
         }
     }
-    if (vFileNames.empty()) return 0;
+    if (vFileNames.empty()) cerr << "This path has no pictures, please check the path." << endl;
     return vFileNames.size();
 
 }
@@ -140,17 +148,19 @@ void visualResult(cv::Mat& image, const std::vector<DetectionResult>& info, cons
 
 int main(int argc, char ** argv) {
 
+    
     //  model_path is the path of the model,    such as "C:\\Users\\NeuroBot\\A"
     //  file_path  is the path of the pictures, such as "C:\\Users\\NeuroBot\\picture"
     string model_path = "C:\\Users\\NeuroBot\\A";
     string file_path  = "C:\\Users\\NeuroBot\\picture";
+
     string device_name = "cuda";
     string model_name = "neuro_deteor";                    // the model name, you can name it by yourself.
-    int total_time = 0;
+
     int status{};                                          // the state after loading the model, and the default is zero.
     load_model(model_name.c_str(), model_path.c_str(), status);
     if (status != 0) {
-        fprintf(stderr, "failed to create detector, code: %d\n", (int)status);
+        cerr << "failed to create detector, code: " << status << endl;
         return -1;
     }
 
@@ -161,35 +171,46 @@ int main(int argc, char ** argv) {
     vector<cv::Mat> mats;                                 // the information in opencv mat format.
 
 
+
     //  predict and print the result.
     //  batch_size is given in the file model.conf. the default is ONE.
     for (int i = 0; i < (int)img_paths.size(); ++i) {
         auto img = cv::imread(file_path + "\\" + img_paths[i]);
-        if (!img.data) {
-            fprintf(stderr, "failed to load image: %s\n", img_paths[i].c_str());
-            continue;
-        }
+		if (!img.data) {
+			cerr << "Load image: " << img_paths[i] << "is failed" << endl;
+			continue;
+		}
+		else {
+			cout << "Load image: " << img_paths[i] << "is successful" << endl;
+		}
         images.push_back(img);
         image_ids.push_back(i);
         mats.push_back(img);
+
         if ((int)mats.size() == get_batch(model_name.c_str())) {
             vector<vector<DetectionResult>> out_results{};
-            if (predict_model(model_name.c_str(), mats, out_results) != 0) {
-                continue;
-            }
-            int i = 0;
+			DWORD start = GetTickCount64();        // beginning time
+			int predictStatus = predict_model(model_name.c_str(), mats, out_results);
+			DWORD end = GetTickCount64();          //  end time
+            if (predictStatus != 0) {
+				cout << "This prediction is failed " << endl;
+				cout << "Time cost:                          " << end - start << " ms" << endl << endl << endl;
+				continue;
+			}
             // The results to be printed.
             // 
             // for OCR and object Detection, results are rectangle box, confidence level,category.
             // 
             // for Pixel Segmentation, results are rectangle box, confidence level,category, pixel segmentation image.
+
             for (auto res : out_results) {
                 for (auto r : res) {
                     // If OK, then print the position in console.
                     if (!r.label.compare("OK")) {  
+
                         cout << r.box.x0 << "-" << r.box.y0 << "-" << r.box.x1 << "-" << r.box.y1 << endl;
                     }
-                    
+                    // If NG, then break.
                 }
                 // It will visual a result by a new window whose name is show.
                 visualResult(mats[i], res, "show");
@@ -200,11 +221,16 @@ int main(int argc, char ** argv) {
             images.clear();
         }
     }
-    if (!mats.empty()) {
-        vector<vector<DetectionResult>> out_results{};
-        (void)predict_model(model_name.c_str(), mats, out_results);
-    }
-    destroy_model(model_name.c_str());
+	if (!mats.empty()) {
+		int requested_batch = get_batch(model_name.c_str());
+		cv::Mat last_pict = mats[mats.size() - 1];
+		while (mats.size() < requested_batch()) {
+			mats.push_back(last_pict);
+		}
+		vector<vector<DetectionResult>> out_results{};
+		(void)predict_model(model_name.c_str(), mats, out_results);
+	}
+	destroy_model(model_name.c_str());
 
     return 0;
 }
