@@ -21,7 +21,7 @@
 - It can load a model that predicts pictures of a directory, a pop-up window that displays the tested picture and an overlay that shows the result box, while logging the specific value on the console.
 
 <!--a.exe -m C:\\Users\\NeuroBot\\A -d C:\\Users\\NeuroBot\\picture -n neuro_deteor-->
-## 2：Check OK or NG
+### 2：Check OK or NG
 - This example is in file **checkOKORNG.cpp**
 - This example involves two different colors red and green to display the label and output the label specific coordinate values on the console.
 - Execute a test that involves only two labels. It works well if the result label is OK, Otherwise there is something wrong, it is NG.
