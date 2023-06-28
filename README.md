@@ -6,10 +6,11 @@
 
 [SDK]: https://neurobot.readthedocs.io/en/latest/Deployment/HowToUseSDK/
 
+/C++/detectEnvironmentAndPredict
 
 
 ### 1： Directly use an executable file to predict
-- This example is in dictionary **detectEnvironmentAndPredict**.
+- This example is in dictionary **C++ / detectEnvironmentAndPredict**（C++ version）, or in dictionary **C# / detectEnvironmentAndPredict**（C# version）
 - This example supports environment detection and outputs an executable file. With environment detection, It can detect whether your computer is capable to use our model, including the following information. And the first three are necessary, and others are recommended.
   - Configuration file And model file exist.
   - The system is a Windows 64 bit version.
@@ -22,24 +23,24 @@
 
 <!--a.exe -m C:\\Users\\NeuroBot\\A -d C:\\Users\\NeuroBot\\picture -n neuro_deteor-->
 ### 2：Check OK or NG
-- This example is in file **checkOKORNG.cpp**
+- This example is in dictionary **C++ / checkOKORNG**（C++ version）, or in dictionary **C# / checkOKORNG**（C# version）
 - This example involves two different colors red and green to display the label and output the label specific coordinate values on the console.
 - Execute a test that involves only two labels. It works well if the result label is OK, Otherwise there is something wrong, it is NG.
 
 
 ### 3：Load multiple models in single-thread
-- This example is in file **loadMultiModelsInSingleThread.cpp**
+- This example is in dictionary **C++ / loadMultiModelsInSingleThread**（C++ version）, or in dictionary **C# / loadMultiModelsInSingleThread**（C# version）
 - This example shows how to load multiple models to predict in single-thread. Exactly, it will load these models one by one, and call the predict interface of each model in turn, which means it will output the result serially.
 loadMultiModelsInMultiThread.cpp	
 
 ### 4：Load multiple models in multi-thread
-- This example is in file **loadMultiModelInMultiThread.cpp**;
+- This example is in dictionary **C++ / loadMultiModelInMultiThread**（C++ version）, or in dictionary **C# / loadMultiModelInMultiThread**（C# version）
 - This example shows how to load multiple models to predict in multi-thread. This means that instead of waiting for each model to finish loading before moving onto the next one, the program can load several models at once, significantly speeding up the process.
 - Each thread loads its own model used by this thread. Inter-threads are model-isolated, and predictions are made within a single thread using the model bound to this thread.
 
 
 ### 5：Load One model to predict in Multi-thread
-- This example is in file **LoadOneModelInSingleThread.cpp**.
+- This example is in dictionary **C++ / LoadOneModelInSingleThread**（C++ version）, or in dictionary **C# / LoadOneModelInSingleThread**（C# version）
 - This example shows how to predict in multi-thread, and we use mutex to ensure mutual exclusion.
 
 ### 5：Use our SDK in LabView
