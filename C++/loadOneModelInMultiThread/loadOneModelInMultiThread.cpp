@@ -1,12 +1,7 @@
 #pragma comment(lib,"Msi.lib")
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <iostream>
-#include <string>d
-#include <stdlib.h>
-#include <fstream>
-#include <typeinfo>
-#include <typeindex>
-#include <json/json.h>
+#include <string>
 #include <Windows.h>
 #include <experimental/filesystem>
 #include <iostream>
@@ -15,16 +10,14 @@
 #include <neuro_core.h>
 #include <opencv2/opencv.hpp>
 #include "putTextZH.h"
-#include <Windows.h>
 #include <msi.h>
-#include "clipp.h"
 #include <thread>
 #include <mutex>
 
 std::mutex mtx;
 
 using namespace std;
-using namespace clipp;
+
 namespace fs = experimental::filesystem;
 // Get all the files's names in the dictionary, and the result will be put into the parameter vFileNames.
 // 
@@ -171,6 +164,7 @@ int predict(string file_path, string model_name) {
         if ((int)mats.size() == get_batch(model_name.c_str())) {
 		vector<vector<DetectionResult>> out_results{};
 			DWORD start = GetTickCount64();        // beginning time
+			// If you use the same model in multiple threads, locks must be added first
             mtx.lock();
 			int predictStatus = predict_model(model_name.c_str(), mats, out_results);
             mtx.unlock();
@@ -211,6 +205,7 @@ int predict(string file_path, string model_name) {
             cout << endl << endl;
         }
     }
+
 	if (!mats.empty()) {
 		int requested_batch = get_batch(model_name.c_str());
 		cv::Mat last_pict = mats[mats.size() - 1];
@@ -232,8 +227,7 @@ int main(int argc, char** argv) {
     string file_path_2 = "C:\\Users\\B";
     string model_path = "C:\\Users\\trt";
     string model_name = "neuro_detector";
-    int status{};                                          // the state after loading the model, and the default is zero.
-    load_model(model_name.c_str(), model_path.c_str(), status);
+    int status = load_model(model_name.c_str(), model_path.c_str(), device_name.c_str());
     if (status != 0) {
         fprintf(stderr, "failed to create detector, code: %d\n", (int)status);
         return -1;

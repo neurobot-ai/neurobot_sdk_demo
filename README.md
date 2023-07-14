@@ -6,8 +6,6 @@
 
 [SDK]: https://neurobot.readthedocs.io/en/latest/Deployment/HowToUseSDK/
 
-/C++/detectEnvironmentAndPredict
-
 
 ### 1： Directly use an executable file to predict
 - This example is in dictionary **C++ / detectEnvironmentAndPredict**（C++ version）, or in dictionary **C# / detectEnvironmentAndPredict**（C# version）

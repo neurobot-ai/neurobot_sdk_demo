@@ -1,12 +1,7 @@
 #pragma comment(lib,"Msi.lib")
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <iostream>
-#include <string>d
-#include <stdlib.h>
-#include <fstream>
-#include <typeinfo>
-#include <typeindex>
-#include <json/json.h>
+#include <string>
 #include <Windows.h>
 #include <experimental/filesystem>
 #include <iostream>
@@ -15,14 +10,12 @@
 #include <neuro_core.h>
 #include <opencv2/opencv.hpp>
 #include "putTextZH.h"
-#include <Windows.h>
 #include <msi.h>
-#include "clipp.h"
 
 
 
 using namespace std;
-using namespace clipp;
+
 namespace fs = experimental::filesystem;
 // Get all the files's names in the dictionary, and the result will be put into the parameter vFileNames.
 // 
@@ -86,7 +79,6 @@ void drawMask(cv::Mat& image, const DetectionResult& info)
     auto x0 = std::max(std::floor(info.box.x0) - 1, 0.f);
     auto y0 = std::max(std::floor(info.box.y0) - 1, 0.f);
     cv::Rect roi((int)x0, (int)y0, info.mask_width, info.mask_height);
-
     // split the RGB channels, overlay mask to a specific color channel
     cv::Mat ch[3];
     split(image, ch);
@@ -113,11 +105,9 @@ void visualResult(cv::Mat& image, const std::vector<DetectionResult>& info, cons
 		cerr << "input is empty, please check the path!" << std::endl;
 		return;
 	}
-
     int fontface = cv::FONT_HERSHEY_PLAIN;
     double fontscale = 1;
     int thickness = 1;
-
     for (int i = 0; i < info.size(); i++)
     {
         //  Generate two points and show the label on the graph.
@@ -128,14 +118,11 @@ void visualResult(cv::Mat& image, const std::vector<DetectionResult>& info, cons
         }
         drawMask(image, info[i]);
     }
-
     // create a new display window and specify the type of window and then show in the screen.
     cv::namedWindow(window_name, cv::WINDOW_FREERATIO);
     cv::imshow(window_name, image);
-
     // wait until user presses any key to exit.
     cv::waitKey(3000);
-
     // to close the window and de-allocate any associated memory usage.
     // For a simple program, you do not really have to call these functions because all the resources and windows of the application are closed automatically by the operating system upon exit.
     cv::destroyAllWindows();
@@ -145,14 +132,9 @@ int predict(string model_path, string file_path, string model_name) {
 
     //  model_path is the path of the model,    such as "C:\\Users\\NeuroBot\\A"
     //  file_path  is the path of the pictures, such as "C:\\Users\\NeuroBot\\picture"
-
-
     string device_name = "cuda";
-
-
     int total_time = 0;
-    int status{};                                          // the state after loading the model, and the default is zero.
-    load_model(model_name.c_str(), model_path.c_str(), status);
+    int status = load_model(model_name.c_str(), model_path.c_str(), device_name.c_str());
 	if (status != 0) {
 		cerr << "failed to create detector, code: " << status << endl;
 		return -1;
@@ -162,9 +144,6 @@ int predict(string model_path, string file_path, string model_name) {
     vector<cv::Mat> images;                               // the information in opencv mat format.
     vector<int> image_ids;                                // the image's id 
     vector<cv::Mat> mats;                                 // the information in opencv mat format.
-
-
-
     //  predict and print the result.
     //  batch_size is given in the file model.conf. the default is ONE.
     for (int i = 0; i < (int)img_paths.size(); ++i) {
@@ -225,7 +204,7 @@ int predict(string model_path, string file_path, string model_name) {
 	if (!mats.empty()) {
 		int requested_batch = get_batch(model_name.c_str());
 		cv::Mat last_pict = mats[mats.size() - 1];
-		while (mats.size() < requested_batch()) {
+		while (mats.size() < requested_batch) {
 			mats.push_back(last_pict);
 		}
 		vector<vector<DetectionResult>> out_results{};
@@ -241,15 +220,11 @@ int main(int argc, char** argv) {
     string device_name = "cuda";
     string model_path_1 = "C:\\Users\\A";
     string model_path_2 = "C:\\Users\\B";
-  
-
-
     string file_path_1 = "C:\\Users\\dirA";
     string file_path_2 = "C:\\Users\\dirB";
-
+	//  Note that there are two different types of models, and you should use different model_name for different models.
     thread t1(predict, model_path_1.c_str(), file_path_1.c_str(), "1");
     thread t2(predict, model_path_2.c_str(), file_path_2.c_str(), "2");
-
     t1.join();
     t2.join();
     return 0;

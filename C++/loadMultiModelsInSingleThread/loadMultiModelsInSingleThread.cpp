@@ -2,11 +2,6 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <iostream>
 #include <string>
-#include <stdlib.h>
-#include <fstream>
-#include <typeinfo>
-#include <typeindex>
-#include <json/json.h>
 #include <Windows.h>
 #include <experimental/filesystem>
 #include <iostream>
@@ -17,12 +12,10 @@
 #include "putTextZH.h"
 #include <Windows.h>
 #include <msi.h>
-#include "clipp.h"
 
 
 
 using namespace std;
-using namespace clipp;
 namespace fs = experimental::filesystem;
 
 
@@ -222,13 +215,12 @@ int main(int argc, char ** argv) {
     string file_path_2 = "C:\\Users\\NeuroBot\\pictureB";
     string model_name_1 = "A";
     string model_name_2 = "B";
-    int status{};                                          // the state after loading the model, and the default is zero.
-    load_model(model_name_1.c_str(), model_path_1.c_str(), status);
+    int status = load_model(model_name_1.c_str(), model_path_1.c_str(), device_name.c_str());
 	if (status != 0) {
 		cerr << "failed to create detector, code: " << status << endl;
 		return -1;
 	}
-    load_model(model_name_2.c_str(), model_path_2.c_str(), status);
+    status = load_model(model_name_2.c_str(), model_path_2.c_str(), device_name.c_str());
 	if (status != 0) {
 		cerr << "failed to create detector, code: " << status << endl;
 		return -1;

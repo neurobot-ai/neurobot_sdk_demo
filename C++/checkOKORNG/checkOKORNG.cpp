@@ -2,11 +2,6 @@
 #pragma comment(lib,"Msi.lib")
 #include <iostream>
 #include <string>
-#include <stdlib.h>
-#include <fstream>
-#include <typeinfo>
-#include <typeindex>
-#include <json/json.h>
 #include <Windows.h>
 #include <experimental/filesystem>
 #include <iostream>
@@ -15,10 +10,10 @@
 #include <neuro_core.h>
 #include <opencv2/opencv.hpp>
 #include "putTextZH.h"
-#include <Windows.h>
+
 #include <msi.h>
 
-
+namespace fs = experimental::filesystem;
 
 using namespace std;
 
@@ -157,8 +152,8 @@ int main(int argc, char ** argv) {
     string device_name = "cuda";
     string model_name = "neuro_deteor";                    // the model name, you can name it by yourself.
 
-    int status{};                                          // the state after loading the model, and the default is zero.
-    load_model(model_name.c_str(), model_path.c_str(), status);
+                                      // the state after loading the model, and the default is zero.
+    int status = load_model(model_name.c_str(), model_path.c_str(), device_name.c_str());
     if (status != 0) {
         cerr << "failed to create detector, code: " << status << endl;
         return -1;
@@ -221,10 +216,15 @@ int main(int argc, char ** argv) {
             images.clear();
         }
     }
+
+	// Check the number of pictures before using predict_model function.
+	// Be sure that the number of pictures equals to the batch.
+
 	if (!mats.empty()) {
 		int requested_batch = get_batch(model_name.c_str());
+		// If the number does not equal to the Batch, use the last picture to fill it.
 		cv::Mat last_pict = mats[mats.size() - 1];
-		while (mats.size() < requested_batch()) {
+		while (mats.size() < requested_batch) {
 			mats.push_back(last_pict);
 		}
 		vector<vector<DetectionResult>> out_results{};
