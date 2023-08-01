@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="/newNeuroBot">
+    <file>icon.ico</file>
+  </qresource>
+  <qresource prefix="新前缀">
+    <file>1.webp</file>
+  </qresource>
+  <qresource prefix="新前缀">
+    <file>pexels-photo-1122409.jpeg</file>
+  </qresource>
+</RCC>

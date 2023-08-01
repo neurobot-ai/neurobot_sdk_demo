@@ -194,6 +194,7 @@ int main(int argc, char** argv) {
 
     // destroy model
     destroy_model(model_name.c_str());
+    cout << "Model cleared! Press any key to quit...\n";
     system("pause");
     return 0;
 }
@@ -288,12 +289,14 @@ void display_results(cv::Mat& image, const vector<DetectionResult>& results, con
             draw_mask(image, result);
         }
 
-        draw_info(image, result);
+        // print labels, label indices, and confidence scores on the image
+        // TODO: you can uncomment it to print info on test images
+        //draw_info(image, result);
     }
 
     cv::imshow(window_name, image);
     cv::waitKey(0);
-    cv::destroyWindow(window_name);
+    cv::destroyAllWindows();
 }
 
 
@@ -303,8 +306,8 @@ void print_info(const vector<DetectionResult>& results) {
         cout << "label:                              " << result.label << "\n";
         cout << "label_index:                        " << result.label_index << "\n";
         cout << "confidential score:                 " << result.score << "\n";
-        cout << "position of result(x0,y0,x1,y1):    " << "(" << result.box.x0 << ", " << result.box.y0 
-                                                       << ", " << result.box.x1 << ", " << result.box.y1 << ")\n";
+        cout << "(x0, y0):                           " << "(" << result.box.x0 << "," << result.box.y0 << ")\n";
+        cout << "(x1, y1):                           " << "(" << result.box.x1 << "," << result.box.y1 << ")\n";
         cout << "row_index:                          " << result.row_index << "\n";
         cout << "col_index:                          " << result.col_index << "\n";
         cout << "mask_width:                         " << result.mask_width << "\n";

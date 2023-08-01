@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>newNeuroBotClass</class>
+ <widget class="QMainWindow" name="newNeuroBotClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>850</width>
+    <height>860</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>宋体</family>
+    <pointsize>22</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>NeuroBot</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="newNeuroBot.qrc">
+    <normaloff>:/newNeuroBot/icon.ico</normaloff>:/newNeuroBot/icon.ico</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>445</y>
+      <width>116</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>仿宋</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string>预测时间</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>59</x>
+      <y>220</y>
+      <width>116</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>仿宋</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string>图片路径</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="time">
+    <property name="geometry">
+     <rect>
+      <x>-360</x>
+      <y>440</y>
+      <width>949</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="predict">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>360</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string>开始预测</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="score">
+    <property name="geometry">
+     <rect>
+      <x>201</x>
+      <y>650</y>
+      <width>451</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>21</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="modelname">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>80</y>
+      <width>451</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>21</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="inputMethodHints">
+     <set>Qt::ImhNoTextHandles</set>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>59</x>
+      <y>80</y>
+      <width>116</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>仿宋</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string>模型名称</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_9">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>580</y>
+      <width>116</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>仿宋</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string>标签索引</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="labelindex">
+    <property name="geometry">
+     <rect>
+      <x>201</x>
+      <y>580</y>
+      <width>451</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>21</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>650</y>
+      <width>116</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>仿宋</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string>置信分数</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>295</y>
+      <width>116</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>仿宋</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string>设备名称</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="x0">
+    <property name="geometry">
+     <rect>
+      <x>201</x>
+      <y>720</y>
+      <width>101</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="label">
+    <property name="geometry">
+     <rect>
+      <x>201</x>
+      <y>510</y>
+      <width>451</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>21</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_9">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>150</y>
+      <width>451</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>21</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="inputMethodHints">
+     <set>Qt::ImhNoEditMenu</set>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="picturepath">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>220</y>
+      <width>451</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>21</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="time_2">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>440</y>
+      <width>451</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_19">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>720</y>
+      <width>101</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>510</y>
+      <width>116</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>仿宋</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string>类别名称</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>59</x>
+      <y>150</y>
+      <width>116</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>仿宋</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string>模型路径</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>61</x>
+      <y>725</y>
+      <width>116</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>仿宋</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string>矩阵坐标</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="y0">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>720</y>
+      <width>101</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="y1">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>720</y>
+      <width>91</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="browse">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>210</y>
+      <width>91</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string>浏览</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_5">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>150</y>
+      <width>91</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+      <stylestrategy>NoAntialias</stylestrategy>
+     </font>
+    </property>
+    <property name="text">
+     <string>浏览</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="devicename">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>290</y>
+      <width>451</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>cpu</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>cuda</string>
+     </property>
+    </item>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="newNeuroBot.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>modelname</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>newNeuroBotClass</receiver>
+   <slot>onModelName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>283</x>
+     <y>97</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>542</x>
+     <y>51</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdit_9</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>newNeuroBotClass</receiver>
+   <slot>onModelPath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>536</x>
+     <y>172</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>625</x>
+     <y>136</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>picturepath</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>newNeuroBotClass</receiver>
+   <slot>onPicturePath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>388</x>
+     <y>241</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>480</x>
+     <y>214</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_5</sender>
+   <signal>clicked()</signal>
+   <receiver>newNeuroBotClass</receiver>
+   <slot>getModelPath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>748</x>
+     <y>177</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>810</x>
+     <y>134</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>browse</sender>
+   <signal>clicked()</signal>
+   <receiver>newNeuroBotClass</receiver>
+   <slot>getPicPath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>744</x>
+     <y>235</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>823</x>
+     <y>250</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>predict</sender>
+   <signal>clicked()</signal>
+   <receiver>newNeuroBotClass</receiver>
+   <slot>predict()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>274</x>
+     <y>399</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>403</x>
+     <y>405</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>time_2</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>newNeuroBotClass</receiver>
+   <slot>getPath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>586</x>
+     <y>472</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>748</x>
+     <y>496</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>devicename</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>newNeuroBotClass</receiver>
+   <slot>onDeviceName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>535</x>
+     <y>320</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>717</x>
+     <y>363</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <signal>signal1()</signal>
+  <signal>signal2()</signal>
+  <slot>on_btnchange()</slot>
+  <slot>predict()</slot>
+  <slot>onModelName()</slot>
+  <slot>onModelPath()</slot>
+  <slot>onPicturePath()</slot>
+  <slot>onDeviceName()</slot>
+  <slot>getPath()</slot>
+  <slot>getModelPath()</slot>
+  <slot>getPicPath()</slot>
+  <slot>slot2()</slot>
+ </slots>
+</ui>

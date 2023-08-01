@@ -146,13 +146,13 @@ namespace NeuroDetection
                 }
 
                 // print labels, label indices, and confidence scores on the image
-                // TODO: you can comment it to not print info on test images
-                DrawInfo(ref image, in results[i]);
+                // TODO: you can uncomment it to print info on test images
+                // DrawInfo(ref image, in results[i]);
             }
 
             Cv2.ImShow(window_name, image);
             Cv2.WaitKey(0);
-            Cv2.DestroyWindow(window_name);
+            Cv2.DestroyAllWindows();
         }
 
 
@@ -168,8 +168,8 @@ namespace NeuroDetection
                 Console.WriteLine("label:                              " + results[i].label);
                 Console.WriteLine("label_index:                        " + results[i].label_index);
                 Console.WriteLine("confidential score:                 " + results[i].score);
-                Console.WriteLine("position of result(x0,y0,x1,y1):    " + "(" + results[i].box.x0 + ", " + results[i].box.y0 
-                                                                         + ", " + results[i].box.x1 + ", " + results[i].box.y1 + ")");
+                Console.WriteLine("(x0,y0):                            " + "(" + results[i].box.x0 + "," + results[i].box.y0 + ")");
+                Console.WriteLine("(x1,y1):                            " + "(" + results[i].box.x1 + "," + results[i].box.y1 + ")");
                 Console.WriteLine("row_index:                          " + results[i].row_index);
                 Console.WriteLine("col_index:                          " + results[i].col_index);
                 Console.WriteLine("mask_width:                         " + results[i].mask_width);
@@ -332,6 +332,7 @@ namespace NeuroDetection
 
             // destroy model
             sdk.DestroyModel(modelName);
+            Console.WriteLine("Model cleared! Press any key to quit...");
             Console.ReadKey();
             return;
         }

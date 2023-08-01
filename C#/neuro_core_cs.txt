@@ -1,0 +1,39 @@
+// Bounding box
+// (x0, y0) coordinates represent the upper left corner of the bounding box
+// (x1, y1) coordinates represent the lower right corner of the bounding box
+public class Box {
+    public float x0;
+    public float y0;
+    public float x1;
+    public float y1;
+};
+
+
+// Detection results
+// For OCR and Object Detection tasks, results are bounding box (box), confidence level (score), 
+//                                                 and category (label, label_index)
+// For Pixel Segmentation task, results are bounding box (box), confidence level (score), category (label, label_index), 
+//                                          and pixel segmentation image (mask, mat_mask_width, mat_mask_height)
+public class DetectionResult
+{
+    public Box box;                     // Bounding box containing the detected object
+    public float score;                 // Score after predicting, ranging from 0 to 1
+                                        // The closer the score is to 1, the better the result is
+    public string label;                // Target's label name after predicting
+    public int label_index;             // Index of the label
+    public Mat mask;                    // Mask of the the detected object
+    public int row_index;               // No specific use right now. It's for the future development
+    public int col_index;               // No specific use right now. It's for the future development
+    public int mask_width;              // No specific use right now. It's for the future development
+    public int mask_height;             // No specific use right now. It's for the future development 
+    public int mat_mask_width;          // Width (#cols) of the mask
+    public int mat_mask_height;         // Height (#rows) of the mask
+};
+
+
+// Prediction results returned by PredictModel() in C#
+public class PredictionResult
+{
+    public DetectionResult[][] outResults;   // final results
+    public int status;                       // status after prediction
+};

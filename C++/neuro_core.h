@@ -26,11 +26,11 @@ struct DetectionResult {
 								 // The closer the score is to 1, the better the result is
 	std::string label;           // The target's label name after predicting
 	int label_index;             // Index of the label
-	cv::Mat mask;                // Mask of the the detected object                         TODO: figure out what it is
-	int row_index;               // Position of the the detected object, used for OCR sort  TODO: figure out what it is
-	int col_index;               // Position of the the detected object, used for OCR sort  TODO: figure out what it is
-	int mask_width;              // Width of the mask 										TODO: figure out what it is
-	int mask_height;             // Height of the mask 										TODO: figure out what it is
+	cv::Mat mask;                // Mask of the the detected object
+	int row_index;               // Position of the the detected object, used for OCR sort
+	int col_index;               // Position of the the detected object, used for OCR sort
+	int mask_width;              // Width of the mask
+	int mask_height;             // Height of the mask
 };
 
 
@@ -53,7 +53,6 @@ extern "C" __declspec(dllexport) int get_batch(const char* model_name);
 // Modify: None
 // Output: A status code indicating whether loading the model is successful or not.
 //		   0 means success and non-zero values mean failure
-//         TODO: add a link to status code explanation page
 extern "C" __declspec(dllexport) int load_model(const char* model_name, const char* model_path, 
 												const char* device_name = "cuda", const int device_index = 0);
 
@@ -63,11 +62,10 @@ extern "C" __declspec(dllexport) int load_model(const char* model_name, const ch
 //         mats:		    An array of test images. Each image is read by OpenCV in the format of cv::Mat	
 //         out_results:		An empty 2D vector which is used for storing detection results
 //         detect_thres:	Threshold for detection. The default is -1.0, meaning using the default configuration.
-// 							Here the default is 0.7.  TODO: ???
+// 							Here the default is 0.7. 
 // Modify: out_results:		Store detection results in out_results if the model predicts successfully
 // Output: A status code indicating whether the model predicts successfully or not.
 //		   0 means success and non-zero values mean failure
-//         TODO: add a link to status code explanation page
 extern "C" __declspec(dllexport) int predict_model(const char* model_name, const std::vector<cv::Mat>& mats, 
 												   std::vector<std::vector<DetectionResult>>& out_results, 
 												   float detect_thres = -1.0);
