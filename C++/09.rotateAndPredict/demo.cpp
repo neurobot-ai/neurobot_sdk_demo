@@ -241,7 +241,6 @@ int main() {
                     for (auto r : res) {
                         float angle = (r.box.y1 - r.box.y0) / (r.box.x1 - r.box.x0);
                         double angleres = getAngle(angle);
-
                         if (r.label_index == 1) angleres = 360 - angleres;
                         std::cout << r.label_index << "  " << r.label_index << std::endl << "angle  " << angleres << std::endl;
                         rotate(mats[0], angleres);

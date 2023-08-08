@@ -136,15 +136,6 @@ int consolidationResult(vector<DetectionResult>& res,vector<DetectionResult>& re
 				x1 = max(x1, res[j_res].box.x1);
 				y1 = max(y1, res[j_res].box.y0);
 
-				// Èç¹ûÔÚÕâÀïÀ©´óµÄ»°£¬¿ÉÄÜºóÐø²»ÏàÁ¬µÄ¿òÒ²±ä´óÁË
-				//res[i_res].box.x0 = min(res[i_res].box.x0, res[j_res].box.x0);
-				//res[j_res].box.x0 = res[i_res].box.x0;
-				//res[i_res].box.y0 = min(res[i_res].box.y0, res[j_res].box.y0);
-				//res[j_res].box.y0 = res[i_res].box.y0;
-				//res[i_res].box.x1 = max(res[i_res].box.x1, res[j_res].box.x1);
-				//res[j_res].box.x1 = res[i_res].box.x1;
-				//res[i_res].box.y1 = max(res[i_res].box.y1, res[j_res].box.y1);
-				//res[j_res].box.y1 = res[i_res].box.y1;
 			}
 		}
 		visited[i_res] = 1;
@@ -238,7 +229,7 @@ int getAllImageName(const std::string dir, std::vector<std::string>& vFileNames,
 
 
 // crop the big picture and row * col smaller pictures.
-// You can also crop the picture with different methods, such as according to the Total pixel size£¬ or 1/3 part.
+// You can also crop the picture with different methods, such as according to the Total pixel sizeï¿½ï¿½ or 1/3 part.
 // 
 // Parameters
 // 
@@ -434,8 +425,8 @@ void visualResult(cv::Mat& image, const std::vector<DetectionResult>& info, cons
 	}
 
 	int fontface = cv::FONT_HERSHEY_PLAIN;
-	// thickness ÊÇ½á¹ûµÄ±ß¿ò¿í¶È
-	// fontsize ÊÇ×ÖÌåµÄ´óÐ¡
+	// thickness ï¿½Ç½ï¿½ï¿½ï¿½Ä±ß¿ï¿½ï¿½ï¿½ï¿½
+	// fontsize ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½Ð¡
 	int fontsize = 10;
 	double thickness = 1;
 
